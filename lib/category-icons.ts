@@ -1,0 +1,133 @@
+import type { LucideIcon } from "lucide-react";
+import {
+  Apple,
+  Banknote,
+  Bike,
+  Bone,
+  BookOpen,
+  Briefcase,
+  Building2,
+  Bus,
+  Car,
+  CircleDollarSign,
+  Clapperboard,
+  Clock,
+  CreditCard,
+  Droplets,
+  Dumbbell,
+  Fuel,
+  Gift,
+  GraduationCap,
+  HandCoins,
+  HeartPulse,
+  Home,
+  Laptop,
+  MapPin,
+  Mic2,
+  MoreHorizontal,
+  PartyPopper,
+  PawPrint,
+  Phone,
+  PiggyBank,
+  Plane,
+  Receipt,
+  RotateCcw,
+  Scissors,
+  ShieldAlert,
+  ShoppingBag,
+  ShoppingCart,
+  Sparkles,
+  Stethoscope,
+  TrainFront,
+  Trees,
+  Users,
+  UtensilsCrossed,
+  Wallet,
+  Wifi,
+  Wrench,
+  Zap,
+} from "lucide-react";
+
+export const CATEGORY_ICONS: Record<string, LucideIcon> = {
+  "inc-salary": Briefcase,
+  "inc-part-time": Clock,
+  "inc-investments": CircleDollarSign,
+  "inc-business": Building2,
+  "inc-freelancing": Laptop,
+  "inc-gifts": Gift,
+  "inc-interest": Banknote,
+  "inc-rental": Home,
+  "inc-bonus": Sparkles,
+  "inc-pocket": Wallet,
+  "inc-refunds": RotateCcw,
+  "inc-other": MoreHorizontal,
+
+  "exp-groceries": ShoppingCart,
+  "exp-fruits": Apple,
+  "exp-non-veg": Bone,
+  "exp-snacks": ShoppingBag,
+  "exp-restaurants": UtensilsCrossed,
+  "exp-movies": Clapperboard,
+  "exp-outings": Trees,
+  "exp-food-delivery": Bike,
+
+  "exp-education": GraduationCap,
+  "exp-books": BookOpen,
+  "exp-emi": Receipt,
+  "exp-cc-bills": CreditCard,
+
+  "exp-shopping": ShoppingBag,
+  "exp-entertainment": Mic2,
+  "exp-salons": Scissors,
+  "exp-hobbies": Sparkles,
+  "exp-gifts": Gift,
+  "exp-sports": Dumbbell,
+
+  "exp-rent": Home,
+  "exp-electricity": Zap,
+  "exp-water": Droplets,
+  "exp-internet": Wifi,
+  "exp-mobile": Phone,
+  "exp-repairs": Wrench,
+
+  "exp-healthcare": Stethoscope,
+  "exp-medicines": HeartPulse,
+  "exp-gym": Dumbbell,
+  "exp-pets": PawPrint,
+  "exp-personal-care": Sparkles,
+
+  "exp-fuel": Fuel,
+  "exp-public-transport": Bus,
+  "exp-vehicle": Car,
+  "exp-travel": Plane,
+  "exp-accommodation": Building2,
+  "exp-trips": MapPin,
+
+  "exp-donations": HandCoins,
+  "exp-family": Users,
+  "exp-events": PartyPopper,
+  "exp-emergency": ShieldAlert,
+  "exp-misc": MoreHorizontal,
+
+  "trf-savings": PiggyBank,
+  "trf-loans": Banknote,
+};
+
+export const GROUP_ICONS: Record<string, LucideIcon> = {
+  food: UtensilsCrossed,
+  "education-finance": GraduationCap,
+  lifestyle: Clapperboard,
+  home: Home,
+  health: HeartPulse,
+  transport: TrainFront,
+  social: Users,
+  custom: Sparkles,
+};
+
+export function getCategoryIcon(categoryId: string): LucideIcon {
+  return CATEGORY_ICONS[categoryId] ?? CircleDollarSign;
+}
+
+export function getGroupIcon(groupId: string): LucideIcon {
+  return GROUP_ICONS[groupId] ?? Sparkles;
+}

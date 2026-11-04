@@ -1,26 +1,408 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --color-ivory: #f4f5f7;
+  --color-ivory-deep: #e8eaee;
+  --color-lavender: #ebe4f7;
+  --color-lavender-deep: #d4c6ef;
+  --color-sage: #0f766e;
+  --color-sage-deep: #0d5c56;
+  --color-sage-soft: #d1f0ec;
+  --color-purple: #4f46e5;
+  --color-purple-soft: #eef0ff;
+  --color-ink: #0f172a;
+  --color-muted: #64748b;
+  --color-line: #e2e8f0;
+  --color-rose: #e11d48;
+  --color-rose-soft: #ffe4e9;
+  --color-surface: #ffffff;
+  --color-sidebar: #0b1220;
+  --color-sidebar-muted: #94a3b8;
+  --color-sidebar-hover: #151d2e;
+  --color-sidebar-active: #1e293b;
+  --color-overlay: rgba(15, 23, 42, 0.48);
+  --background: var(--color-ivory);
+  --foreground: var(--color-ink);
+  --ease-out-expo: cubic-bezier(0.22, 1, 0.36, 1);
+  --duration-fast: 160ms;
+  --duration: 260ms;
+  --duration-slow: 400ms;
+  --radius: 12px;
+}
+
+html[data-theme="dark"] {
+  --color-ivory: #0b1220;
+  --color-ivory-deep: #151d2e;
+  --color-lavender: #2a2550;
+  --color-lavender-deep: #3b3470;
+  --color-sage: #2dd4bf;
+  --color-sage-deep: #5eead4;
+  --color-sage-soft: #11332f;
+  --color-purple: #818cf8;
+  --color-purple-soft: #1e1b4b;
+  --color-ink: #f8fafc;
+  --color-muted: #94a3b8;
+  --color-line: #243044;
+  --color-rose: #fb7185;
+  --color-rose-soft: #3f1219;
+  --color-surface: #111827;
+  --color-sidebar: #060a12;
+  --color-sidebar-muted: #94a3b8;
+  --color-sidebar-hover: #121a29;
+  --color-sidebar-active: #1e293b;
+  --color-overlay: rgba(0, 0, 0, 0.6);
+  --background: var(--color-ivory);
+  --foreground: var(--color-ink);
+  color-scheme: dark;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-body);
+  --font-display: var(--font-display);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  transition:
+    background-color var(--duration-slow) var(--ease-out-expo),
+    color var(--duration-slow) var(--ease-out-expo);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-body), system-ui, sans-serif;
+  letter-spacing: -0.01em;
+}
+
+h1,
+h2,
+h3,
+.font-display {
+  font-family: var(--font-display), var(--font-body), system-ui, sans-serif;
+  letter-spacing: -0.03em;
+}
+
+.theme-ready,
+.theme-ready body,
+.theme-ready .surface,
+.theme-ready nav,
+.theme-ready section,
+.theme-ready input,
+.theme-ready select,
+.theme-ready textarea,
+.theme-ready button,
+.theme-ready a {
+  transition-property: background-color, border-color, color, box-shadow;
+  transition-duration: var(--duration);
+  transition-timing-function: var(--ease-out-expo);
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes soft-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes page-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes sheet-in {
+  from {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes sheet-out {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+}
+
+@keyframes drawer-in {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes drawer-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes drawer-out {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+}
+
+@keyframes modal-in {
+  from {
+    opacity: 0;
+    transform: scale(0.98) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes modal-out {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+}
+
+@keyframes overlay-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes overlay-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes list-enter {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes list-exit {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+    max-height: 120px;
+  }
+  to {
+    opacity: 0;
+    transform: translateX(16px);
+    max-height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes toast-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+.animate-rise {
+  animation: rise-in 0.35s var(--ease-out-expo) both;
+}
+
+.animate-fade {
+  animation: soft-fade 0.35s ease-out both;
+}
+
+.animate-pop {
+  animation: pop 0.3s var(--ease-out-expo) both;
+}
+
+.page-enter {
+  animation: page-enter 0.3s var(--ease-out-expo) both;
+}
+
+.overlay-enter {
+  animation: overlay-in var(--duration) ease-out both;
+}
+
+.overlay-exit {
+  animation: overlay-out var(--duration-fast) ease-in both;
+}
+
+.sheet-enter {
+  animation: sheet-in var(--duration-slow) var(--ease-out-expo) both;
+}
+
+.sheet-exit {
+  animation: sheet-out var(--duration) ease-in both;
+}
+
+.drawer-enter {
+  animation: drawer-in var(--duration-slow) var(--ease-out-expo) both;
+}
+
+.drawer-enter-left {
+  animation: drawer-in-left var(--duration-slow) var(--ease-out-expo) both;
+}
+
+.drawer-exit {
+  animation: drawer-out var(--duration) ease-in both;
+}
+
+.modal-enter {
+  animation: modal-in var(--duration) var(--ease-out-expo) both;
+}
+
+.modal-exit {
+  animation: modal-out var(--duration-fast) ease-in both;
+}
+
+.list-enter {
+  animation: list-enter var(--duration) var(--ease-out-expo) both;
+}
+
+.list-exit {
+  animation: list-exit var(--duration) ease-in both;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.toast-enter {
+  animation: toast-in var(--duration) var(--ease-out-expo) both;
+}
+
+.toast-exit {
+  animation: toast-out var(--duration-fast) ease-in both;
+}
+
+.stagger > * {
+  animation: rise-in 0.35s var(--ease-out-expo) both;
+}
+
+.stagger > *:nth-child(1) {
+  animation-delay: 0.02s;
+}
+.stagger > *:nth-child(2) {
+  animation-delay: 0.05s;
+}
+.stagger > *:nth-child(3) {
+  animation-delay: 0.08s;
+}
+.stagger > *:nth-child(4) {
+  animation-delay: 0.11s;
+}
+.stagger > *:nth-child(5) {
+  animation-delay: 0.14s;
+}
+.stagger > *:nth-child(6) {
+  animation-delay: 0.17s;
+}
+
+.card-lift {
+  transition:
+    border-color var(--duration-fast) ease,
+    box-shadow var(--duration) ease,
+    background-color var(--duration) ease;
+}
+
+.card-lift:hover {
+  border-color: color-mix(in srgb, var(--color-purple) 35%, var(--color-line));
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+}
+
+.pressable {
+  transition: transform var(--duration-fast) ease, opacity var(--duration-fast) ease;
+}
+
+.pressable:active {
+  transform: scale(0.985);
+}
+
+.surface {
+  background: var(--color-surface);
+  border-color: var(--color-line);
+}
+
+.panel {
+  background: var(--color-surface);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius);
 }
