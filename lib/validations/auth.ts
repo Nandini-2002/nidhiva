@@ -82,8 +82,11 @@ export function firebaseAuthMessage(error: unknown): string {
       return "Google sign-in was closed before it finished.";
     case "auth/popup-blocked":
       return "Your browser blocked the Google popup. Allow popups and try again.";
-    case "auth/unauthorized-domain":
-      return "This domain is not allowed in Firebase Auth. Add localhost in Authentication → Settings → Authorized domains.";
+    case "auth/unauthorized-domain": {
+      const host =
+        typeof window !== "undefined" ? window.location.hostname : "this site";
+      return `This site (${host}) is not allowed in Firebase Auth. Add ${host} under Authentication → Settings → Authorized domains.`;
+    }
     case "auth/operation-not-allowed":
       return "Google sign-in is not enabled yet. In Firebase Console turn on Google under Authentication → Sign-in method.";
     case "auth/account-exists-with-different-credential":
