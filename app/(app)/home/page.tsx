@@ -35,18 +35,23 @@ export default function HomePage() {
 
   return (
     <div className="stagger space-y-5">
-      <div className="flex flex-wrap items-end justify-between gap-3">
+      <div className="page-hero flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="text-sm text-[var(--color-muted)]">Welcome back</p>
-          <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-white/75">
+            Welcome back
+          </p>
+          <h1 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
             {profile?.displayName ?? "there"}
           </h1>
+          <p className="mt-1 text-sm text-white/85">
+            Your month at a glance — income, spending and what is left.
+          </p>
         </div>
         <div className="flex gap-2">
           <button
             type="button"
             onClick={() => openAddTransaction("income")}
-            className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--color-line)] bg-[var(--color-surface)] px-3 py-2 text-xs font-semibold"
+            className="inline-flex items-center gap-1.5 rounded-full bg-white/20 px-3 py-2 text-xs font-bold text-white backdrop-blur"
           >
             <Plus size={14} />
             Income
@@ -54,7 +59,7 @@ export default function HomePage() {
           <button
             type="button"
             onClick={() => openAddTransaction("expense")}
-            className="inline-flex items-center gap-1.5 rounded-lg bg-[var(--color-ink)] px-3 py-2 text-xs font-semibold text-white"
+            className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-2 text-xs font-bold text-fuchsia-700"
           >
             <Plus size={14} />
             Expense
@@ -82,7 +87,7 @@ export default function HomePage() {
             <SpendingChart byCategory={expenseByCategory} />
           )}
 
-          <section className="panel p-5">
+          <section className="tint-card p-5">
             <div className="mb-3 flex items-center justify-between">
               <h3 className="text-sm font-semibold">Recent activity</h3>
               <Link

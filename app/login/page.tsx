@@ -3,22 +3,28 @@
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { FormEvent, Suspense, useState } from "react";
-import { useAuth } from "@/context/AuthContext";
+import { GoogleButton } from "@/components/auth/GoogleButton";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
+import { useAuth } from "@/context/AuthContext";
+import { validateLogin } from "@/lib/validations/auth";
 
 function LoginForm() {
-  const { login, continueAsGuest } = useAuth();
+  const { login, loginWithGoogle, continueAsGuest } = useAuth();
   const router = useRouter();
   const params = useSearchParams();
   const next = params.get("next") || "/home";
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
+    const check = validateLogin({ email, password });
+    setErrors(check.errors);
+    if (!check.ok) return;
     setBusy(true);
     setError(null);
     try {
@@ -31,28 +37,69 @@ function LoginForm() {
     }
   }
 
+  async function onGoogle() {
+    setBusy(true);
+    setError(null);
+    try {
+      await loginWithGoogle();
+      router.replace(next);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Google sign-in failed");
+    } finally {
+      setBusy(false);
+    }
+  }
+
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-md flex-col justify-center px-6 py-10">
-      <Link href="/" className="mb-8 font-[family-name:var(--font-display)] text-3xl text-[var(--color-purple)]">
+      <Link
+        href="/"
+        className="mb-8 text-3xl font-extrabold tracking-tight text-[var(--color-purple)]"
+      >
         Nidhiva
       </Link>
-      <h1 className="text-2xl font-medium">Welcome back</h1>
-      <p className="mt-1 text-sm text-[var(--color-muted)]">Log in to continue</p>
-      <form onSubmit={onSubmit} className="mt-8 space-y-4">
-        <Input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-        <Input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
+      <h1 className="text-2xl font-semibold">Welcome back</h1>
+      <p className="mt-1 text-sm text-[var(--color-muted)]">
+        Sign in with Google or your email
+      </p>
+
+      <div className="mt-8">
+        <GoogleButton onClick={() => void onGoogle()} disabled={busy} />
+      </div>
+
+      <div className="my-5 flex items-center gap-3 text-xs text-[var(--color-muted)]">
+        <span className="h-px flex-1 bg-[var(--color-line)]" />
+        or email
+        <span className="h-px flex-1 bg-[var(--color-line)]" />
+      </div>
+
+      <form onSubmit={onSubmit} className="space-y-4" noValidate>
+        <div>
+          <Input
+            type="email"
+            placeholder="Email"
+            autoComplete="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          {errors.email ? (
+            <p className="mt-1 text-xs text-[var(--color-rose)]">{errors.email}</p>
+          ) : null}
+        </div>
+        <div>
+          <Input
+            type="password"
+            placeholder="Password"
+            autoComplete="current-password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          {errors.password ? (
+            <p className="mt-1 text-xs text-[var(--color-rose)]">
+              {errors.password}
+            </p>
+          ) : null}
+        </div>
         {error ? <p className="text-sm text-[var(--color-rose)]">{error}</p> : null}
         <Button type="submit" className="w-full" disabled={busy}>
           {busy ? "Signing in…" : "Log in"}
@@ -60,8 +107,9 @@ function LoginForm() {
       </form>
       <Button
         type="button"
-        variant="secondary"
+        variant="ghost"
         className="mt-3 w-full"
+        disabled={busy}
         onClick={() => {
           continueAsGuest();
           router.replace("/home");
@@ -71,7 +119,7 @@ function LoginForm() {
       </Button>
       <p className="mt-6 text-center text-sm text-[var(--color-muted)]">
         New here?{" "}
-        <Link href="/register" className="text-[var(--color-purple)]">
+        <Link href="/register" className="font-semibold text-[var(--color-purple)]">
           Create an account
         </Link>
       </p>

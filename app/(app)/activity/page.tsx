@@ -8,6 +8,7 @@ import { useCategories } from "@/hooks/useCategories";
 import { useToast } from "@/context/ToastContext";
 import { useTransactions } from "@/hooks/useTransactions";
 import { categoryLabel } from "@/lib/categories";
+import { PageHero } from "@/components/ui/PageHero";
 import { formatCurrency, formatDate } from "@/lib/format";
 import { filterTransactions } from "@/lib/transactions";
 import type { TransactionFilters as Filters } from "@/lib/types";
@@ -42,14 +43,11 @@ export default function ActivityPage() {
 
   return (
     <div className="stagger space-y-5">
-      <header>
-        <h1 className="font-[family-name:var(--font-display)] text-3xl sm:text-4xl">
-          Activity
-        </h1>
-        <p className="text-sm text-[var(--color-muted)]">
-          Search, filter and review history
-        </p>
-      </header>
+      <PageHero
+        kicker="Ledger"
+        title="Activity"
+        subtitle="Search, filter and review every income, expense and transfer."
+      />
 
       <TransactionFilters
         value={filters}
@@ -77,7 +75,7 @@ export default function ActivityPage() {
               key={tx.id}
               delayMs={Math.min(i, 8) * 40}
               exiting={exitingIds.has(tx.id)}
-              className="card-lift flex items-center justify-between gap-3 rounded-2xl bg-[var(--color-surface)] px-4 py-3 shadow-sm ring-1 ring-[var(--color-line)]"
+              className="card-lift tint-card flex items-center justify-between gap-3 px-4 py-3"
             >
               <div className="flex min-w-0 items-center gap-3">
                 <CategoryIcon

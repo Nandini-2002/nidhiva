@@ -256,13 +256,6 @@ export function TransactionForm({
             </div>
           ) : null}
 
-          <Button
-            type="submit"
-            className="hidden w-full py-3 xl:inline-flex"
-            disabled={submitting}
-          >
-            {submitting ? "Saving…" : "Save transaction"}
-          </Button>
         </aside>
 
         <div>
@@ -279,7 +272,7 @@ export function TransactionForm({
         </div>
       </div>
 
-      <div className="sticky bottom-20 z-10 border-t border-[var(--color-line)] bg-[var(--color-surface)]/95 py-3 backdrop-blur xl:hidden">
+      <div className="sticky bottom-20 z-10 border-t border-[var(--color-line)] bg-[var(--color-surface)] py-3 lg:static lg:border-0 lg:bg-transparent lg:p-0">
         <Button type="submit" className="w-full py-3.5" disabled={submitting}>
           {submitting ? "Saving…" : "Save transaction"}
         </Button>

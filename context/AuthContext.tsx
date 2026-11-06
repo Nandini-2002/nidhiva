@@ -10,14 +10,21 @@ import {
   type ReactNode,
 } from "react";
 import {
+  GoogleAuthProvider,
   createUserWithEmailAndPassword,
   onAuthStateChanged,
   signInWithEmailAndPassword,
+  signInWithPopup,
   signOut,
   updateProfile,
   type User,
 } from "firebase/auth";
 import { auth } from "@/lib/firebase/client";
+import {
+  firebaseAuthMessage,
+  validateLogin,
+  validateRegister,
+} from "@/lib/validations/auth";
 import type { UserPreferences, UserProfile } from "@/lib/types";
 
 const GUEST_ID = "local-guest";
@@ -38,7 +45,13 @@ interface AuthContextValue {
   loading: boolean;
   isGuest: boolean;
   login: (email: string, password: string) => Promise<void>;
-  register: (name: string, email: string, password: string) => Promise<void>;
+  loginWithGoogle: () => Promise<void>;
+  register: (
+    name: string,
+    email: string,
+    password: string,
+    confirm: string,
+  ) => Promise<void>;
   logout: () => Promise<void>;
   continueAsGuest: () => void;
   updatePreferences: (prefs: Partial<UserPreferences>) => void;
@@ -107,15 +120,46 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const userId = user?.uid ?? (guest ? GUEST_ID : "");
 
   const login = useCallback(async (email: string, password: string) => {
+    const check = validateLogin({ email, password });
+    if (!check.ok) {
+      throw new Error(Object.values(check.errors)[0]);
+    }
     if (!auth) throw new Error("Firebase Auth is not configured");
-    await signInWithEmailAndPassword(auth, email, password);
+    try {
+      await signInWithEmailAndPassword(auth, email.trim(), password);
+    } catch (error) {
+      throw new Error(firebaseAuthMessage(error));
+    }
+  }, []);
+
+  const loginWithGoogle = useCallback(async () => {
+    if (!auth) throw new Error("Firebase Auth is not configured");
+    const provider = new GoogleAuthProvider();
+    provider.setCustomParameters({ prompt: "select_account" });
+    try {
+      await signInWithPopup(auth, provider);
+    } catch (error) {
+      throw new Error(firebaseAuthMessage(error));
+    }
   }, []);
 
   const register = useCallback(
-    async (name: string, email: string, password: string) => {
+    async (name: string, email: string, password: string, confirm: string) => {
+      const check = validateRegister({ name, email, password, confirm });
+      if (!check.ok) {
+        throw new Error(Object.values(check.errors)[0]);
+      }
       if (!auth) throw new Error("Firebase Auth is not configured");
-      const cred = await createUserWithEmailAndPassword(auth, email, password);
-      await updateProfile(cred.user, { displayName: name });
+      try {
+        const cred = await createUserWithEmailAndPassword(
+          auth,
+          email.trim(),
+          password,
+        );
+        await updateProfile(cred.user, { displayName: name.trim() });
+      } catch (error) {
+        throw new Error(firebaseAuthMessage(error));
+      }
     },
     [],
   );
@@ -157,6 +201,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       loading,
       isGuest: guest && !user,
       login,
+      loginWithGoogle,
       register,
       logout,
       continueAsGuest,
@@ -169,6 +214,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       loading,
       guest,
       login,
+      loginWithGoogle,
       register,
       logout,
       continueAsGuest,

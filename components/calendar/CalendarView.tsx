@@ -92,10 +92,16 @@ export function CalendarView({ transactions }: { transactions: Transaction[] }) 
               key={key}
               type="button"
               onClick={() => setSelected(key)}
-              className={`aspect-square rounded-xl p-1 text-sm transition ${
+              className={`aspect-square rounded-xl p-1 text-sm font-semibold transition ${
                 active
-                  ? "bg-[var(--color-purple)] text-white"
-                  : "bg-white/60 hover:bg-[var(--color-lavender)]/50"
+                  ? "bg-[var(--color-purple)] text-white shadow-md"
+                  : totals.income > 0 && totals.expense > 0
+                    ? "bg-[var(--color-lavender)]"
+                    : totals.income > 0
+                      ? "bg-[var(--color-sage-soft)]"
+                      : totals.expense > 0
+                        ? "bg-[var(--color-rose-soft)]"
+                        : "bg-white/70 hover:bg-[var(--color-lavender)]"
               }`}
             >
               <div>{day}</div>
@@ -114,7 +120,7 @@ export function CalendarView({ transactions }: { transactions: Transaction[] }) 
         })}
       </div>
 
-      <section className="rounded-2xl bg-white/70 p-4 ring-1 ring-[var(--color-line)]">
+      <section className="tint-card p-4">
         <h3 className="text-sm font-medium text-[var(--color-muted)]">
           {selected} · {monthKey}
         </h3>

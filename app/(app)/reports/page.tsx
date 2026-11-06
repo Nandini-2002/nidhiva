@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { SpendingChart } from "@/components/dashboard/SpendingChart";
 import { useSummary } from "@/hooks/useSummary";
 import { useTransactions } from "@/hooks/useTransactions";
+import { PageHero } from "@/components/ui/PageHero";
 import {
   formatCurrency,
   formatMonth,
@@ -52,12 +53,11 @@ export default function ReportsPage() {
 
   return (
     <div className="animate-rise space-y-5">
-      <header>
-        <h1 className="font-[family-name:var(--font-display)] text-3xl">Reports</h1>
-        <p className="text-sm text-[var(--color-muted)]">
-          Monthly charts, comparisons and all-time summaries
-        </p>
-      </header>
+      <PageHero
+        kicker="Insights"
+        title="Reports"
+        subtitle="Monthly charts, comparisons and all-time summaries."
+      />
 
       <input
         type="month"
@@ -86,7 +86,7 @@ export default function ReportsPage() {
             <Stat label="Net (excl. transfers)" value={formatCurrency(current.net)} />
           </section>
 
-          <section className="rounded-2xl bg-white/70 p-4 ring-1 ring-[var(--color-line)]">
+          <section className="tint-card p-4">
             <h3 className="font-medium">vs {formatMonth(previous.month)}</h3>
             <p className="mt-2 text-sm text-[var(--color-muted)]">
               Spending {expenseDelta == null ? "—" : `${expenseDelta > 0 ? "up" : "down"} ${Math.abs(expenseDelta).toFixed(0)}%`}
@@ -98,7 +98,7 @@ export default function ReportsPage() {
           <SpendingChart byCategory={expenseCats} title="Category-wise spending" />
           <SpendingChart byCategory={incomeCats} title="Category-wise income" />
 
-          <section className="rounded-2xl bg-white/70 p-4 ring-1 ring-[var(--color-line)]">
+          <section className="tint-card p-4">
             <h3 className="font-medium">Month-to-month</h3>
             <div className="mt-4 flex h-40 items-end gap-2">
               {monthly.slice(-6).map((m) => (
@@ -169,7 +169,7 @@ function Stat({
   invert?: boolean;
 }) {
   return (
-    <div className="rounded-2xl bg-white/80 p-4 ring-1 ring-[var(--color-line)]">
+    <div className="tint-card p-4">
       <p className="text-xs text-[var(--color-muted)]">{label}</p>
       <p className="mt-1 font-[family-name:var(--font-display)] text-xl">{value}</p>
       {delta != null ? (

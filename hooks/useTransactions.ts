@@ -5,7 +5,8 @@ import { useAuth } from "@/context/AuthContext";
 import {
   createTransaction,
   deleteTransaction,
-  listTransactions,
+  listTransactionsSync,
+  startBackgroundSync,
   updateTransaction,
 } from "@/lib/transactions";
 import type {
@@ -27,16 +28,12 @@ export function useTransactions(filters: TransactionFilters = {}) {
       setLoading(false);
       return;
     }
-    setLoading(true);
     setError(null);
-    try {
-      const items = await listTransactions(userId, filters);
-      setTransactions(items);
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "Failed to load transactions");
-    } finally {
-      setLoading(false);
-    }
+    setTransactions(listTransactionsSync(userId, filters));
+    setLoading(false);
+    startBackgroundSync(userId, () => {
+      setTransactions(listTransactionsSync(userId, filters));
+    });
   }, [userId, filters.type, filters.categoryId, filters.search, filters.from, filters.to]);
 
   useEffect(() => {

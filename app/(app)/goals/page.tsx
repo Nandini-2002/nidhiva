@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { deleteGoal, listGoals, upsertGoal } from "@/lib/budgets";
 import { formatCurrency } from "@/lib/format";
+import { PageHero } from "@/components/ui/PageHero";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import type { Goal } from "@/lib/types";
@@ -40,17 +41,13 @@ export default function GoalsPage() {
 
   return (
     <div className="animate-rise space-y-5">
-      <header>
-        <h1 className="font-[family-name:var(--font-display)] text-3xl">Goals</h1>
-        <p className="text-sm text-[var(--color-muted)]">
-          Save toward something that matters
-        </p>
-      </header>
+      <PageHero
+        kicker="Saving"
+        title="Goals"
+        subtitle="Pick something worth saving for and watch the progress climb."
+      />
 
-      <form
-        onSubmit={handleAdd}
-        className="space-y-3 rounded-2xl bg-white/75 p-4 ring-1 ring-[var(--color-line)]"
-      >
+      <form onSubmit={handleAdd} className="tint-card space-y-3 p-4">
         <Input
           placeholder="Goal name"
           value={name}
@@ -81,7 +78,7 @@ export default function GoalsPage() {
           return (
             <li
               key={g.id}
-              className="rounded-2xl bg-white/80 p-4 ring-1 ring-[var(--color-line)]"
+              className="tint-card p-4"
             >
               <div className="flex items-center justify-between">
                 <p className="font-medium">{g.name}</p>

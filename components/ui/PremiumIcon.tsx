@@ -27,6 +27,8 @@ export function PremiumIcon({
       <img
         src={src}
         alt={alt}
+        loading="lazy"
+        decoding="async"
         className="h-full w-full object-cover"
         draggable={false}
       />

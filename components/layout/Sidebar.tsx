@@ -38,17 +38,14 @@ function NavSection({
             key={`${item.href}-${item.label}`}
             href={item.href}
             onClick={onNavigate}
-            className={`flex items-center gap-3 rounded-xl px-2.5 py-2 text-[13px] font-medium transition ${
-              active
-                ? "bg-[var(--color-sidebar-active)] text-white shadow-sm"
-                : "text-[var(--color-sidebar-muted)] hover:bg-[var(--color-sidebar-hover)] hover:text-white"
-            }`}
+            className="flex items-center gap-3 rounded-xl px-2.5 py-2 text-[13px] font-medium text-white/90 transition hover:bg-white/10 hover:text-white"
+            style={{
+              background: active ? "rgba(255, 255, 255, 0.14)" : "transparent",
+              color: "#ffffff",
+            }}
           >
             <ColorIcon href={item.href} size="sm" />
             {item.label}
-            {active ? (
-              <span className="ml-auto h-1.5 w-1.5 rounded-full bg-emerald-400" />
-            ) : null}
           </Link>
         );
       })}
@@ -84,7 +81,7 @@ function SidebarBody({ onNavigate }: { onNavigate?: () => void }) {
             openAddTransaction("expense");
             onNavigate?.();
           }}
-          className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-teal-500 to-emerald-500 px-3 py-2.5 text-[13px] font-semibold text-white shadow-lg shadow-emerald-500/25 hover:brightness-110"
+          className="flex w-full items-center justify-center gap-2 rounded-xl bg-white px-3 py-2.5 text-[13px] font-semibold text-[#0f172a] shadow-sm transition hover:bg-slate-100"
         >
           <ColorIcon asset="income" size="sm" />
           New transaction
@@ -108,9 +105,17 @@ function SidebarBody({ onNavigate }: { onNavigate?: () => void }) {
   );
 }
 
+const sidebarBackground = {
+  background:
+    "linear-gradient(180deg, #0a1628 0%, #122a52 46%, #0c1e3d 100%)",
+};
+
 export function Sidebar() {
   return (
-    <aside className="fixed inset-y-0 left-0 z-30 hidden w-[248px] flex-col border-r border-white/5 bg-[var(--color-sidebar)] px-3 py-5 lg:flex">
+    <aside
+      className="fixed inset-y-0 left-0 z-30 hidden w-[248px] flex-col border-r border-white/10 px-3 py-5 lg:flex"
+      style={sidebarBackground}
+    >
       <SidebarBody />
     </aside>
   );
@@ -150,7 +155,10 @@ export function MobileMenuButton() {
             className="absolute inset-0 bg-[var(--color-overlay)] overlay-enter"
             onClick={() => setOpen(false)}
           />
-          <aside className="drawer-enter-left absolute inset-y-0 left-0 flex w-[min(17.5rem,86vw)] flex-col bg-[var(--color-sidebar)] px-3 py-4 shadow-2xl">
+          <aside
+            className="drawer-enter-left absolute inset-y-0 left-0 flex w-[min(17.5rem,86vw)] flex-col px-3 py-4 shadow-2xl"
+            style={sidebarBackground}
+          >
             <div className="mb-2 flex justify-end px-1">
               <button
                 type="button"

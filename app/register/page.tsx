@@ -3,25 +3,32 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
-import { useAuth } from "@/context/AuthContext";
+import { GoogleButton } from "@/components/auth/GoogleButton";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
+import { useAuth } from "@/context/AuthContext";
+import { validateRegister } from "@/lib/validations/auth";
 
 export default function RegisterPage() {
-  const { register } = useAuth();
+  const { register, loginWithGoogle } = useAuth();
   const router = useRouter();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirm, setConfirm] = useState("");
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
+    const check = validateRegister({ name, email, password, confirm });
+    setErrors(check.errors);
+    if (!check.ok) return;
     setBusy(true);
     setError(null);
     try {
-      await register(name, email, password);
+      await register(name, email, password, confirm);
       router.replace("/home");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Registration failed");
@@ -30,48 +37,108 @@ export default function RegisterPage() {
     }
   }
 
+  async function onGoogle() {
+    setBusy(true);
+    setError(null);
+    try {
+      await loginWithGoogle();
+      router.replace("/home");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Google sign-in failed");
+    } finally {
+      setBusy(false);
+    }
+  }
+
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-md flex-col justify-center px-6 py-10">
-      <Link href="/" className="mb-8 font-[family-name:var(--font-display)] text-3xl text-[var(--color-purple)]">
+      <Link
+        href="/"
+        className="mb-8 text-3xl font-extrabold tracking-tight text-[var(--color-purple)]"
+      >
         Nidhiva
       </Link>
-      <h1 className="text-2xl font-medium">Create your account</h1>
+      <h1 className="text-2xl font-semibold">Create your account</h1>
       <p className="mt-1 text-sm text-[var(--color-muted)]">
-        Start tracking income and expenses
+        Use Google, or an email with a strong password
       </p>
-      <form onSubmit={onSubmit} className="mt-8 space-y-4">
-        <Input
-          placeholder="Your name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
+
+      <div className="mt-8">
+        <GoogleButton
+          onClick={() => void onGoogle()}
+          disabled={busy}
+          label="Sign up with Google"
         />
-        <Input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-        <Input
-          type="password"
-          placeholder="Password (min 6 characters)"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          minLength={6}
-          required
-        />
+      </div>
+
+      <div className="my-5 flex items-center gap-3 text-xs text-[var(--color-muted)]">
+        <span className="h-px flex-1 bg-[var(--color-line)]" />
+        or email
+        <span className="h-px flex-1 bg-[var(--color-line)]" />
+      </div>
+
+      <form onSubmit={onSubmit} className="space-y-4" noValidate>
+        <Field error={errors.name}>
+          <Input
+            placeholder="Your name"
+            autoComplete="name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+        </Field>
+        <Field error={errors.email}>
+          <Input
+            type="email"
+            placeholder="Email"
+            autoComplete="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+        </Field>
+        <Field error={errors.password}>
+          <Input
+            type="password"
+            placeholder="Password (8+ chars, letter and number)"
+            autoComplete="new-password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </Field>
+        <Field error={errors.confirm}>
+          <Input
+            type="password"
+            placeholder="Confirm password"
+            autoComplete="new-password"
+            value={confirm}
+            onChange={(e) => setConfirm(e.target.value)}
+          />
+        </Field>
         {error ? <p className="text-sm text-[var(--color-rose)]">{error}</p> : null}
         <Button type="submit" className="w-full" disabled={busy}>
-          {busy ? "Creating…" : "Register"}
+          {busy ? "Creating…" : "Create account"}
         </Button>
       </form>
       <p className="mt-6 text-center text-sm text-[var(--color-muted)]">
         Already have an account?{" "}
-        <Link href="/login" className="text-[var(--color-purple)]">
+        <Link href="/login" className="font-semibold text-[var(--color-purple)]">
           Log in
         </Link>
       </p>
     </main>
+  );
+}
+
+function Field({
+  error,
+  children,
+}: {
+  error?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div>
+      {children}
+      {error ? <p className="mt-1 text-xs text-[var(--color-rose)]">{error}</p> : null}
+    </div>
   );
 }

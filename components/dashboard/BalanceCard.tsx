@@ -11,7 +11,7 @@ export function BalanceCard({
   monthLabel: string;
 }) {
   return (
-    <section className="overflow-hidden rounded-2xl bg-gradient-to-br from-indigo-600 via-violet-600 to-fuchsia-500 p-6 text-white shadow-lg shadow-violet-300/40 sm:p-7">
+    <section className="page-hero overflow-hidden p-6 text-white sm:p-7">
       <div className="flex items-start justify-between gap-4">
         <div>
           <p className="text-xs font-medium uppercase tracking-[0.14em] text-white/75">

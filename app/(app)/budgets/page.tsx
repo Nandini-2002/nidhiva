@@ -7,6 +7,7 @@ import { useTransactions } from "@/hooks/useTransactions";
 import { deleteBudget, listBudgets, upsertBudget } from "@/lib/budgets";
 import { categoryLabel } from "@/lib/categories";
 import { formatCurrency, toMonthKey } from "@/lib/format";
+import { PageHero } from "@/components/ui/PageHero";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import type { Budget } from "@/lib/types";
@@ -53,17 +54,13 @@ export default function BudgetsPage() {
 
   return (
     <div className="animate-rise space-y-5">
-      <header>
-        <h1 className="font-[family-name:var(--font-display)] text-3xl">Budgets</h1>
-        <p className="text-sm text-[var(--color-muted)]">
-          Set a spending limit for each category
-        </p>
-      </header>
+      <PageHero
+        kicker="Limits"
+        title="Budgets"
+        subtitle="Set a spending limit for each category and watch it fill up."
+      />
 
-      <form
-        onSubmit={handleAdd}
-        className="space-y-3 rounded-2xl bg-white/75 p-4 ring-1 ring-[var(--color-line)]"
-      >
+      <form onSubmit={handleAdd} className="tint-card space-y-3 p-4">
         <select
           value={categoryId}
           onChange={(e) => setCategoryId(e.target.value)}
@@ -99,7 +96,7 @@ export default function BudgetsPage() {
             return (
               <li
                 key={b.id}
-                className="rounded-2xl bg-white/80 p-4 ring-1 ring-[var(--color-line)]"
+                className="tint-card p-4"
               >
                 <div className="flex items-center justify-between text-sm">
                   <span className="font-medium">{categoryLabel(b.categoryId)}</span>

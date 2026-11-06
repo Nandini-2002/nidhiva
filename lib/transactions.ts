@@ -8,7 +8,6 @@ import {
   setDoc,
   where,
 } from "firebase/firestore";
-import { getIdToken } from "@/lib/auth-token";
 import { db } from "@/lib/firebase/client";
 import { toDateKey } from "@/lib/format";
 import type {
@@ -78,45 +77,6 @@ export function filterTransactions(
     );
 }
 
-async function apiFetch(
-  path: string,
-  init: RequestInit = {},
-): Promise<Response | null> {
-  const token = await getIdToken();
-  if (!token) return null;
-  try {
-    const res = await withTimeout(
-      fetch(path, {
-        ...init,
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-          ...(init.headers ?? {}),
-        },
-      }),
-      5000,
-    );
-    return res;
-  } catch {
-    return null;
-  }
-}
-
-async function listViaAdminApi(
-  filters: TransactionFilters,
-): Promise<Transaction[] | null> {
-  const params = new URLSearchParams();
-  if (filters.type) params.set("type", filters.type);
-  if (filters.categoryId) params.set("categoryId", filters.categoryId);
-  if (filters.from) params.set("from", filters.from);
-  if (filters.to) params.set("to", filters.to);
-
-  const res = await apiFetch(`/api/transactions?${params.toString()}`);
-  if (!res || !res.ok) return null;
-  const data = await res.json();
-  return (data.transactions as Transaction[]) ?? [];
-}
-
 async function syncFromFirestore(userId: string): Promise<Transaction[] | null> {
   if (!db || userId === GUEST_ID) return null;
   try {
@@ -153,44 +113,41 @@ async function deleteRemote(userId: string, id: string) {
   }
 }
 
+/** Instant read from this device. Network sync never blocks the UI. */
+export function listTransactionsSync(
+  userId: string,
+  filters: TransactionFilters = {},
+): Transaction[] {
+  return filterTransactions(readLocal(userId), filters);
+}
+
+let syncing = false;
+
+export function startBackgroundSync(userId: string, onUpdate?: () => void) {
+  if (!userId || userId === GUEST_ID || syncing || !db) return;
+  syncing = true;
+  void syncFromFirestore(userId)
+    .then((remote) => {
+      if (remote) onUpdate?.();
+    })
+    .finally(() => {
+      syncing = false;
+    });
+}
+
 export async function listTransactions(
   userId: string,
   filters: TransactionFilters = {},
 ): Promise<Transaction[]> {
-  if (userId !== GUEST_ID) {
-    const viaApi = await listViaAdminApi(filters);
-    if (viaApi) {
-      writeLocal(userId, viaApi);
-      return filterTransactions(viaApi, { search: filters.search });
-    }
-
-    const remote = await syncFromFirestore(userId);
-    if (remote) return filterTransactions(remote, filters);
-  }
-
-  return filterTransactions(readLocal(userId), filters);
+  const local = listTransactionsSync(userId, filters);
+  startBackgroundSync(userId);
+  return local;
 }
 
 export async function createTransaction(
   userId: string,
   input: CreateTransactionInput,
 ): Promise<Transaction> {
-  if (userId !== GUEST_ID) {
-    const res = await apiFetch("/api/transactions", {
-      method: "POST",
-      body: JSON.stringify(input),
-    });
-
-    if (res?.ok) {
-      const data = await res.json();
-      const tx = data.transaction as Transaction;
-      const items = readLocal(userId);
-      items.unshift(tx);
-      writeLocal(userId, items);
-      return tx;
-    }
-  }
-
   const now = new Date().toISOString();
   const tx: Transaction = {
     id: newId(),
@@ -210,7 +167,7 @@ export async function createTransaction(
   const items = readLocal(userId);
   items.unshift(tx);
   writeLocal(userId, items);
-  await persistRemote(tx);
+  void persistRemote(tx);
   return tx;
 }
 
@@ -218,24 +175,6 @@ export async function updateTransaction(
   userId: string,
   input: UpdateTransactionInput,
 ): Promise<Transaction | null> {
-  if (userId !== GUEST_ID) {
-    const res = await apiFetch("/api/transactions", {
-      method: "PATCH",
-      body: JSON.stringify(input),
-    });
-
-    if (res?.ok) {
-      const data = await res.json();
-      const next = data.transaction as Transaction;
-      const items = readLocal(userId);
-      const idx = items.findIndex((t) => t.id === next.id);
-      if (idx >= 0) items[idx] = next;
-      else items.unshift(next);
-      writeLocal(userId, items);
-      return next;
-    }
-  }
-
   const items = readLocal(userId);
   const idx = items.findIndex((t) => t.id === input.id);
   if (idx < 0) return null;
@@ -248,7 +187,7 @@ export async function updateTransaction(
   };
   items[idx] = next;
   writeLocal(userId, items);
-  await persistRemote(next);
+  void persistRemote(next);
   return next;
 }
 
@@ -256,24 +195,10 @@ export async function deleteTransaction(
   userId: string,
   id: string,
 ): Promise<boolean> {
-  if (userId !== GUEST_ID) {
-    const res = await apiFetch(`/api/transactions?id=${encodeURIComponent(id)}`, {
-      method: "DELETE",
-    });
-
-    if (res?.ok) {
-      writeLocal(
-        userId,
-        readLocal(userId).filter((t) => t.id !== id),
-      );
-      return true;
-    }
-  }
-
   const items = readLocal(userId);
   const next = items.filter((t) => t.id !== id);
   if (next.length === items.length) return false;
   writeLocal(userId, next);
-  await deleteRemote(userId, id);
+  void deleteRemote(userId, id);
   return true;
 }

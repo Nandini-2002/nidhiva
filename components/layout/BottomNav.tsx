@@ -37,7 +37,10 @@ export function BottomNav() {
           <button
             type="button"
             onClick={() => openAddTransaction("expense")}
-            className="flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-violet-600 to-fuchsia-500 p-1 shadow-xl shadow-fuchsia-500/30"
+            className="flex h-14 w-14 items-center justify-center rounded-full p-1 shadow-xl"
+            style={{
+              background: "linear-gradient(135deg, var(--stage-a), var(--stage-b))",
+            }}
             aria-label="Add transaction"
           >
             <ColorIcon asset="income" size="md" />

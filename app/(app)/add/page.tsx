@@ -46,20 +46,20 @@ function AddTransactionPage() {
 
   return (
     <div className="stagger w-full space-y-5">
-      <div className="flex flex-wrap items-start justify-between gap-3 rounded-2xl border border-violet-200 bg-gradient-to-r from-violet-50 via-fuchsia-50 to-amber-50 p-4 sm:p-5">
+      <div className="page-hero flex flex-wrap items-start justify-between gap-3 p-4 text-white sm:p-5">
         <div className="flex items-start gap-3">
           <ColorIcon asset="finance" size="lg" />
           <div>
             <Link
               href="/home"
-              className="mb-1 inline-flex items-center gap-1.5 text-xs font-semibold text-violet-600"
+              className="mb-1 inline-flex items-center gap-1.5 text-xs font-semibold text-white/80"
             >
               ← Back to dashboard
             </Link>
-            <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">
+            <h1 className="text-2xl font-extrabold tracking-tight text-white sm:text-3xl">
               Add transaction
             </h1>
-            <p className="mt-1 text-sm text-slate-600">
+            <p className="mt-1 text-sm text-white/85">
               Pick any category below — everything is visible under each heading.
             </p>
           </div>
