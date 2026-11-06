@@ -85,12 +85,16 @@ async function syncFromFirestore(userId: string): Promise<Transaction[] | null> 
       where("userId", "==", userId),
       orderBy("date", "desc"),
     );
-    const snap = await withTimeout(getDocs(q), 4000);
-    if (!snap) return null;
+    const snap = await withTimeout(getDocs(q), 2500);
+    if (!snap) {
+      remoteOff = true;
+      return null;
+    }
     const items = snap.docs.map((d) => d.data() as Transaction);
     writeLocal(userId, items);
     return items;
   } catch {
+    remoteOff = true;
     return null;
   }
 }
@@ -122,9 +126,10 @@ export function listTransactionsSync(
 }
 
 let syncing = false;
+let remoteOff = false;
 
 export function startBackgroundSync(userId: string, onUpdate?: () => void) {
-  if (!userId || userId === GUEST_ID || syncing || !db) return;
+  if (!userId || userId === GUEST_ID || syncing || remoteOff || !db) return;
   syncing = true;
   void syncFromFirestore(userId)
     .then((remote) => {

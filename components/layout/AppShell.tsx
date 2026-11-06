@@ -54,7 +54,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         >
           <div className="flex items-center gap-3">
             {userId ? <MobileMenuButton /> : null}
-            <div className="lg:hidden">
+            <div className="flex items-center gap-2 lg:hidden">
+              <img
+                src="/brand/nidhiva-mark.png"
+                alt=""
+                className="h-8 w-8 rounded-lg object-cover"
+              />
               <p className="text-sm font-bold tracking-tight">Nidhiva</p>
             </div>
             <div className="hidden lg:block">

@@ -4,11 +4,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { BOTTOM_NAV } from "@/lib/nav";
 import { ColorIcon } from "@/components/ui/ColorIcon";
-import { useOverlay } from "@/context/OverlayContext";
 
 export function BottomNav() {
   const pathname = usePathname();
-  const { openAddTransaction } = useOverlay();
 
   return (
     <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-[var(--color-line)] bg-[var(--color-surface)] lg:hidden">
@@ -34,17 +32,17 @@ export function BottomNav() {
         })}
 
         <li className="-mt-4">
-          <button
-            type="button"
-            onClick={() => openAddTransaction("expense")}
-            className="flex h-14 w-14 items-center justify-center rounded-full p-1 shadow-xl"
+          <Link
+            href="/add"
+            prefetch
+            className="flex h-14 w-14 cursor-pointer items-center justify-center rounded-full p-1 shadow-xl"
             style={{
               background: "linear-gradient(135deg, var(--stage-a), var(--stage-b))",
             }}
             aria-label="Add transaction"
           >
             <ColorIcon asset="income" size="md" />
-          </button>
+          </Link>
         </li>
 
         {BOTTOM_NAV.slice(2).map((item) => {

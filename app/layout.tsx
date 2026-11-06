@@ -17,7 +17,14 @@ const display = Plus_Jakarta_Sans({
 
 export const metadata: Metadata = {
   title: "Nidhiva",
-  description: "Professional income, expense and savings tracking.",
+  description: "Your Money. Your Treasure.",
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "32x32" },
+      { url: "/favicon-n.png", type: "image/png", sizes: "32x32" },
+    ],
+    apple: "/apple-icon.png",
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

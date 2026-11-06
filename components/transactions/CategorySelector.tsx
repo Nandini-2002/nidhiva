@@ -48,7 +48,7 @@ export function CategorySelector({
             return (
               <section
                 key={group.id}
-                className="rounded-2xl border p-3 sm:p-4"
+                className="rounded-2xl border p-3 [content-visibility:auto] sm:p-4"
                 style={{
                   background: colors.bg,
                   borderColor: colors.border,

@@ -12,7 +12,6 @@ import {
 } from "@/lib/nav";
 import { ColorIcon } from "@/components/ui/ColorIcon";
 import { useAuth } from "@/context/AuthContext";
-import { useOverlay } from "@/context/OverlayContext";
 
 function NavSection({
   title,
@@ -55,7 +54,6 @@ function NavSection({
 
 function SidebarBody({ onNavigate }: { onNavigate?: () => void }) {
   const { profile, isGuest } = useAuth();
-  const { openAddTransaction } = useOverlay();
 
   return (
     <div className="flex h-full flex-col text-white">
@@ -63,9 +61,13 @@ function SidebarBody({ onNavigate }: { onNavigate?: () => void }) {
         <Link
           href="/home"
           onClick={onNavigate}
-          className="flex items-center gap-2 text-[22px] font-extrabold tracking-tight text-white"
+          className="flex items-center gap-2.5 text-[22px] font-extrabold tracking-tight text-white"
         >
-          <ColorIcon asset="savings" size="md" />
+          <img
+            src="/brand/nidhiva-mark.png"
+            alt=""
+            className="h-10 w-10 rounded-xl bg-white object-cover"
+          />
           Nidhiva
         </Link>
         <p className="mt-2 truncate text-xs text-[var(--color-sidebar-muted)]">
@@ -75,17 +77,15 @@ function SidebarBody({ onNavigate }: { onNavigate?: () => void }) {
       </div>
 
       <div className="px-1 py-4">
-        <button
-          type="button"
-          onClick={() => {
-            openAddTransaction("expense");
-            onNavigate?.();
-          }}
-          className="flex w-full items-center justify-center gap-2 rounded-xl bg-white px-3 py-2.5 text-[13px] font-semibold text-[#0f172a] shadow-sm transition hover:bg-slate-100"
+        <Link
+          href="/add"
+          prefetch
+          onClick={onNavigate}
+          className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-white px-3 py-2.5 text-[13px] font-semibold text-[#0f172a] shadow-sm hover:bg-slate-100"
         >
           <ColorIcon asset="income" size="sm" />
           New transaction
-        </button>
+        </Link>
       </div>
 
       <div className="flex-1 space-y-5 overflow-y-auto px-1 pb-4">

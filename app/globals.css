@@ -91,18 +91,23 @@ h3,
 }
 
 .theme-ready,
-.theme-ready body,
-.theme-ready .surface,
-.theme-ready nav,
-.theme-ready section,
-.theme-ready input,
-.theme-ready select,
-.theme-ready textarea,
-.theme-ready button,
-.theme-ready a {
-  transition-property: background-color, border-color, color, box-shadow;
+.theme-ready body {
+  transition-property: background-color, color;
   transition-duration: var(--duration);
   transition-timing-function: var(--ease-out-expo);
+}
+
+button,
+a,
+select,
+summary,
+label,
+[role="button"] {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
 }
 
 @keyframes rise-in {
@@ -302,7 +307,7 @@ h3,
 }
 
 .page-enter {
-  animation: page-enter 0.3s var(--ease-out-expo) both;
+  animation: page-enter 0.12s var(--ease-out-expo);
 }
 
 .overlay-enter {

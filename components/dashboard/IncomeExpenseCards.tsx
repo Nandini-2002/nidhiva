@@ -54,7 +54,6 @@ export function IncomeExpenseCards({
         </p>
       </button>
       <div className="flex items-center gap-3 rounded-2xl bg-[var(--color-purple)] px-4 py-3.5 text-sm text-white shadow-lg sm:col-span-2">
-        <ColorIcon asset="savings" size="sm" />
         <p>
           Transfers{" "}
           <span className="font-semibold">{formatCurrency(transfer)}</span>

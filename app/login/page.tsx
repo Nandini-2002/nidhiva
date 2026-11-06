@@ -52,11 +52,20 @@ function LoginForm() {
 
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-md flex-col justify-center px-6 py-10">
-      <Link
-        href="/"
-        className="mb-8 text-3xl font-extrabold tracking-tight text-[var(--color-purple)]"
-      >
-        Nidhiva
+      <Link href="/" className="mb-8 flex items-center gap-3">
+        <img
+          src="/brand/nidhiva-mark.png"
+          alt=""
+          className="h-14 w-14 rounded-2xl object-cover"
+        />
+        <span>
+          <span className="block text-3xl font-extrabold tracking-tight text-[var(--color-ink)]">
+            Nidhiva
+          </span>
+          <span className="block text-sm text-[var(--color-muted)]">
+            Your Money. Your Treasure.
+          </span>
+        </span>
       </Link>
       <h1 className="text-2xl font-semibold">Welcome back</h1>
       <p className="mt-1 text-sm text-[var(--color-muted)]">
