@@ -31,6 +31,7 @@ export const ALL_SIDEBAR_NAV: NavItem[] = [
 export const BOTTOM_NAV = [
   { href: "/home", label: "Home", emoji: "🏠" },
   { href: "/activity", label: "Activity", emoji: "📋" },
-  { href: "/reports", label: "Reports", emoji: "📊" },
-  { href: "/profile", label: "Profile", emoji: "👤" },
+  { href: "/splits", label: "Splits", emoji: "🤝" },
+  { href: "/budgets", label: "Budgets", emoji: "👛" },
+  { href: "/goals", label: "Goals", emoji: "🎯" },
 ] as const;

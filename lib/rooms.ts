@@ -39,6 +39,11 @@ export interface Room {
   expenses: RoomExpense[];
   settlements: RoomSettlement[];
   createdAt: string;
+  updatedAt?: string;
+  ownerId?: string;
+  /** Signed-in accounts that can open this room from the invite link. */
+  memberIds?: string[];
+  shared?: boolean;
 }
 
 export const ROOM_CATEGORIES: { id: RoomCategory; label: string }[] = [
@@ -224,12 +229,14 @@ export function createRoom(name: string, memberNames: string[]): Room {
       name: memberName,
       color: MEMBER_COLORS[index % MEMBER_COLORS.length],
     }));
+  const now = new Date().toISOString();
   return {
     id: crypto.randomUUID(),
     name: name.trim(),
     members,
     expenses: [],
     settlements: [],
-    createdAt: new Date().toISOString(),
+    createdAt: now,
+    updatedAt: now,
   };
 }

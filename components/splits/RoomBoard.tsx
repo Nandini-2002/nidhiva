@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { formatCurrency, toDateKey } from "@/lib/format";
 import {
   ROOM_CATEGORIES,
@@ -13,6 +13,7 @@ import {
   type RoomCategory,
   type RoomExpense,
 } from "@/lib/rooms";
+import { copyTextNow, roomInviteUrl } from "@/lib/shared-rooms";
 
 const emptyFriends = ["", ""];
 
@@ -23,6 +24,7 @@ export function RoomBoard({
   onChange,
   onCreate,
   onDelete,
+  onInvite,
 }: {
   rooms: Room[];
   activeId: string | null;
@@ -30,6 +32,7 @@ export function RoomBoard({
   onChange: (room: Room) => void;
   onCreate: (room: Room) => void;
   onDelete: (id: string) => void;
+  onInvite: (room: Room) => void;
 }) {
   const room = rooms.find((item) => item.id === activeId) ?? null;
 
@@ -64,7 +67,12 @@ export function RoomBoard({
         />
       </div>
 
-      <RoomView room={room} onChange={onChange} onDelete={onDelete} />
+      <RoomView
+        room={room}
+        onChange={onChange}
+        onDelete={onDelete}
+        onInvite={onInvite}
+      />
     </div>
   );
 }
@@ -185,12 +193,20 @@ function RoomView({
   room,
   onChange,
   onDelete,
+  onInvite,
 }: {
   room: Room;
   onChange: (room: Room) => void;
   onDelete: (id: string) => void;
+  onInvite: (room: Room) => void;
 }) {
   const [memberError, setMemberError] = useState("");
+  const [inviteNote, setInviteNote] = useState("");
+  const [inviteUrl, setInviteUrl] = useState("");
+
+  useEffect(() => {
+    setInviteUrl(roomInviteUrl(room));
+  }, [room]);
   const ledger = useMemo(() => roomLedger(room), [room]);
   const plan = useMemo(() => suggestSettlements(room), [room]);
   const totals = useMemo(() => categoryTotals(room), [room]);
@@ -255,6 +271,47 @@ function RoomView({
 
   return (
     <div className="space-y-4">
+      <section className="tint-card flex flex-wrap items-center justify-between gap-3 p-5">
+        <div>
+          <h2 className="text-lg font-bold">Invite</h2>
+          <p className="mt-1 text-sm text-[var(--color-muted)]">
+            Send the link. The other person signs in and this room opens for both of you.
+          </p>
+        </div>
+        <button
+          type="button"
+          className="hero-btn"
+          onClick={() => {
+            try {
+              const url = roomInviteUrl(room);
+              setInviteUrl(url);
+              const copied = copyTextNow(url);
+              setInviteNote(
+                copied
+                  ? "Link copied. Send it to the other person."
+                  : "Link is in the box. Press and hold it, then copy.",
+              );
+              onInvite(room);
+            } catch {
+              setInviteNote("Could not copy. Select the link in the box.");
+            }
+          }}
+        >
+          Copy invite link
+        </button>
+        {inviteUrl ? (
+          <input
+            className="field w-full"
+            readOnly
+            value={inviteUrl}
+            onFocus={(event) => event.currentTarget.select()}
+          />
+        ) : null}
+        {inviteNote ? (
+          <p className="w-full text-sm font-medium text-[var(--color-ink)]">{inviteNote}</p>
+        ) : null}
+      </section>
+
       <div className="grid gap-3 sm:grid-cols-3">
         <Stat label="Room total" value={formatCurrency(spent)} tone="bg-[var(--color-sage)]" />
         <Stat
